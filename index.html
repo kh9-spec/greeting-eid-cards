@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بطاقة تهنئة العيد</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        
+        --primary-grad: linear-gradient(135deg, #1e3c72, #2a5298); /* أزرق داكن للمهمة الأساسية */
+        --download-grad: linear-gradient(135deg, #2193b0, #6dd5ed); /* أزرق سماوي للتحميل */
+        --share-grad: linear-gradient(135deg, #00c6ff, #0072ff);    /* أزرق حيوي للمشاركة */
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Cairo', sans-serif;
+        background: linear-gradient(135deg, #66ccff, #0066ff);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 25px;
+        width: 90%;
+        max-width: 450px;
+        text-align: center;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+    .title { font-size: 26px; font-weight: bold; margin-bottom: 5px; color: #333; }
+    .subtitle { font-size: 14px; color: #666; margin-bottom: 20px; }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 12px;
+        border: 2px solid #eee;
+        font-family: 'Cairo';
+        text-align: center;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+        transition: border-color 0.3s;
+    }
+
+    input:focus { border-color: #2a5298; outline: none; }
+
+    /* تنسيق زر الإنشاء */
+    #generateBtn {
+        background: var(--primary-grad);
+        color: white;
+        width: 100%;
+        font-family: 'Cairo';
+        padding: 12px;
+        font-size: 18px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(30, 60, 144, 0.3);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #generateBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 144, 0.4);
+    }
+
+    canvas {
+        margin-top: 20px;
+        width: 100%;
+        border-radius: 15px;
+        display: none; 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .controls {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        justify-content: center;
+    }
+
+    /* تنسيق أزرار الأكشن */
+    .action-btn {
+        flex: 1;
+        padding: 12px 5px;
+        font-size: 16px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        color: white;
+        font-family: 'Cairo';
+        font-weight: bold;
+        display: none; 
+        transition: transform 0.2s, opacity 0.3s;
+    }
+
+    #downloadBtn { 
+        background: var(--download-grad); 
+        box-shadow: 0 4px 12px rgba(33, 147, 176, 0.3);
+    }
+
+    #shareBtn { 
+        background: var(--share-grad); 
+        box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+    }
+
+    .action-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .action-btn:active { transform: scale(0.95); }
+
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="title">🎉 كل عام وانتم بخير</div>
+    <div class="subtitle">اكتب اسمك واصنع بطاقة تهنئتك الخاصة</div>
+
+    <input type="text" id="nameInput" placeholder="أدخل اسمك هنا...">
+    <button id="generateBtn" onclick="generateCard()">أنشئ البطاقة</button>
+
+    <canvas id="cardCanvas" width="571" height="1044"></canvas>
+
+    <div class="controls">
+        <button id="downloadBtn" class="action-btn" onclick="downloadImage()">⬇️ تحميل</button>
+        <button id="shareBtn" class="action-btn" onclick="shareCard()">📤 مشاركة</button>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById("cardCanvas");
+const ctx = canvas.getContext("2d");
+const input = document.getElementById("nameInput");
+const downloadBtn = document.getElementById("downloadBtn");
+const shareBtn = document.getElementById("shareBtn");
+
+const image = new Image();
+image.src = "https://image2url.com/r2/default/images/1771989581630-374315cb-515e-49bc-bbc5-2672d73af8bf.png"; 
+image.crossOrigin = "anonymous";
+
+function generateCard() {
+    const name = input.value.trim();
+    if (!name) {
+        alert("لطفاً، اكتب الاسم أولاً");
+        return;
+    }
+
+    canvas.style.display = "block";
+    downloadBtn.style.display = "block";
+    shareBtn.style.display = "block";
+
+    drawCard(name);
+}
+
+function drawCard(name) {
+    ctx.fillStyle = "#2c3e50";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (image.complete) {
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    }
+
+    // إعدادات النص (بالأسفل كما طلبت)
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
+    ctx.font = "bold 25px Cairo";
+    ctx.fillText(name, canvas.width / 2, canvas.height - 145);
+}
+
+function downloadImage() {
+    const link = document.createElement("a");
+    link.download = `Eid-Card.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+}
+
+async function shareCard() {
+    try {
+        const dataUrl = canvas.toDataURL("image/png");
+        const blob = await (await fetch(dataUrl)).blob();
+        const file = new File([blob], "eid-card.png", { type: "image/png" });
+
+        if (navigator.share) {
+            await navigator.share({
+                title: 'تهنئة عيد',
+                text: `بطاقة تهنئة من ${input.value}`,
+                files: [file]
+            });
+        } else {
+            alert("المشاركة المباشرة غير مدعومة في هذا المتصفح. يمكنك تحميل الصورة يدوياً.");
+        }
+    } catch (err) {
+        console.error("خطأ في المشاركة:", err);
+    }
+}
+</script>
+
+</body>
+</html>
